@@ -27,7 +27,7 @@ If you use this package, please cite: Michels, E.H.A. (2024). xxxxx [Software]. 
 - Install devtools if not installed
 - install.packages("devtools")
 - devtools::install_github("ErikMichels/DIP")
-- The cDIP function **requires** Python. Please install Python at https://www.python.org/downloads/.During the installation make sure you tick the box of 'Add Python to PATH' prior to pressing 'install now'
+- The cDIP function **requires** Python. Please install Python at https://www.python.org/downloads/. During the installation make sure you TICK the box of 'Add Python to PATH' prior to pressing 'install now'
 
 ---
 
