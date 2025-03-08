@@ -26,7 +26,7 @@ If you use this package, please cite: Michels, E.H.A. (2024). xxxxx [Software]. 
 ### To install DIP ###
 - Install devtools if not installed
 - install.packages("devtools")
-- devtools::install_github("your-repo/DIP")
+- devtools::install_github("ErikMichels/DIP")
 
 ---
 
