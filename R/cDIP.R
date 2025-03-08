@@ -14,6 +14,15 @@ cDIP <- function(new_data) {
   package_base_dir <- system.file(package = "DIP")
   venv_dir <- file.path(package_base_dir, "r-reticulate-env")
 
+  # Attempt to find a Python configuration automatically
+  python_config <- py_discover_config()
+
+  # If no Python installation is found, instruct the user to install Python
+  if (is.null(python_config$python)) {
+    stop("Error: No suitable Python installation found. This function requires Python. Please install Python at https://www.python.org/downloads/.During the installation make
+         sure you tick the box of 'Add Python to PATH' prior to pressing 'install now'. ")
+  }
+
   # Ensure the virtual environment exists
   if (!dir.exists(venv_dir)) {
     message("Creating a new virtual environment...")
@@ -135,3 +144,4 @@ cDIP <- function(new_data) {
   # Return results invisibly (so they are NOT printed)
   invisible(results_df)
 }
+
