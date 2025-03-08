@@ -25,16 +25,20 @@ If you use this package, please cite: Michels, E.H.A. (2024). xxxxx [Software]. 
 
 ## 🔍 **DIP_stage vs. cDIP: Key Differences**
 
-| Feature            | **DIP_stage** 🏷️ | **cDIP** 📈 |
-|--------------------|----------------|-------------|
-| **Output Type**   | Categorical (DIP1, DIP2, DIP3) | Continuous (0-1 scale) |
-| **Ease of Interpretation** | ✅ Easier – Defined stages | ⚡ More detailed – Fine-grained scale |
-| **Model Type**    | Extreme Gradient Boosting (XGBoost) | Random Forest Regressor |
-| **Best For**      | **Stratification** – Classifies immune dysregulation into stages | **Prognostic Analysis** – Tracks immune dysregulation over time |
-| **Granularity**   | **Lower** – Groups patients into broad categories | **Higher** – Provides a precise value for immune dysregulation |
-| **Clinical Use**  | Helps categorize patients into severity stages | Tracks immune dysregulation progression & immunomodulation effects |
-| **Prognostic Power** | ✅ Useful but limited to stages | 🔥 **More powerful** – Detects small immune shifts |
+| Feature              | **DIP_stage** 🏷️ | **cDIP** 📈 |
+|----------------------|------------------|-------------|
+| **Output Type**     | Categorical (DIP1, DIP2, DIP3) | Continuous (0-1 scale) |
+| **Ease of Interpretation** | ✅ **Clear-cut** – Well-defined immune dysregulation stages | ⚡ **More nuanced** – Detects small immune shifts |
+| **Model Type**      | Extreme Gradient Boosting (XGBoost) | Random Forest Regressor |
+| **Best For**        | **Stratification & Prognosis** – Groups patients into distinct immune dysregulation stages | **More Detailed Prognosis** – Tracks immune dysregulation trends more precisely |
+| **Granularity**     | **Grouped categories** – Easier for clinical decision-making | **Higher precision** – Differentiates borderline cases |
+| **Prognostic Power** | ✅ **Strong** – Predicts mortality & secondary infections | 🔥 **More sensitive** – Captures subtle changes in immune state over time |
+| **Corticosteroid Response** | ✅ Identifies responders vs. non-responders | ✅ **Better differentiation** in borderline responders |
+| **Tracking Over Time** | ✅ **Useful for monitoring**, but stage transitions may be sudden | ✅ **More gradual tracking** – Detects improvement/deterioration even within a stage |
+| **Clinical Insights** | Helps categorize patients & predict outcomes | Provides **continuous assessment** of immune progression & treatment effects |
 | **Technical Requirements** | Runs in **R only** | Requires **Python (via reticulate)** |
+
+
 
 ---
 
