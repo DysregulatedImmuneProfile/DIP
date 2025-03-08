@@ -27,6 +27,7 @@ If you use this package, please cite: Michels, E.H.A. (2024). xxxxx [Software]. 
 - Install devtools if not installed
 - install.packages("devtools")
 - devtools::install_github("ErikMichels/DIP")
+- The cDIP function **requires** Python. Please install Python at https://www.python.org/downloads/.During the installation make sure you tick the box of 'Add Python to PATH' prior to pressing 'install now'
 
 ---
 
@@ -53,7 +54,7 @@ Traditional scoring systems fail to accurately reflect immune state, limiting th
 
 ---
 
-## 📌 Feature 1
+## 📌 Model 1: DIP stage
 
 ### 🔹 DIP_stage: Stage-Based Immune Dysregulation Prediction
 
@@ -95,11 +96,14 @@ DIP_stage(test_data)
 📊 Results will be saved in the global environment (DIP_stage_results) along with the generated plots (DIP_stage_piechart, DIP_stage_3D).
 
 ---
-## 📌 Feature 2
+## 📌 Model 2 cDIP
 
 ### 🔹 cDIP: Continuous Immune Dysregulation Scale
 
 📈 Instead of discrete stages (DIP1-3), **cDIP provides a continuous immune dysregulation score ranging from 0 to 1**.
+
+### ⚠️ Requirement
+- The cDIP function requires Python. Please install Python at https://www.python.org/downloads/.During the installation make sure you tick the box of 'Add Python to PATH' prior to pressing 'install now'
 
 #### 🧪 Input:
 - Same **3-biomarker input** as DIP_stage.
