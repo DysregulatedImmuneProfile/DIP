@@ -23,6 +23,21 @@ If you use this package, please cite: Michels, E.H.A. (2024). xxxxx [Software]. 
 
 ---
 
+## 🔍 **DIP_stage vs. cDIP: Key Differences**
+
+| Feature            | **DIP_stage** 🏷️ | **cDIP** 📈 |
+|--------------------|----------------|-------------|
+| **Output Type**   | Categorical (DIP1, DIP2, DIP3) | Continuous (0-1 scale) |
+| **Ease of Interpretation** | ✅ Easier – Defined stages | ⚡ More detailed – Fine-grained scale |
+| **Model Type**    | Extreme Gradient Boosting (XGBoost) | Random Forest Regressor |
+| **Best For**      | **Stratification** – Classifies immune dysregulation into stages | **Prognostic Analysis** – Tracks immune dysregulation over time |
+| **Granularity**   | **Lower** – Groups patients into broad categories | **Higher** – Provides a precise value for immune dysregulation |
+| **Clinical Use**  | Helps categorize patients into severity stages | Tracks immune dysregulation progression & immunomodulation effects |
+| **Prognostic Power** | ✅ Useful but limited to stages | 🔥 **More powerful** – Detects small immune shifts |
+| **Technical Requirements** | Runs in **R only** | Requires **Python (via reticulate)** |
+
+---
+
 ### To install DIP ###
 - Install devtools if not installed
 
