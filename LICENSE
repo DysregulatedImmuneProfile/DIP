@@ -3,7 +3,7 @@ COPYRIGHT HOLDER: E.H.A. Michels
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, merge, and distribute the Software for academic and research purposes only, subject to the following conditions:
 
-1. Research Use Only
+## 1. Research Use Only ##
 This software is designed exclusively for research and academic purposes.
 🚫 It is NOT intended for clinical decision-making, patient diagnosis, or treatment guidance.
 🚫 It is NOT a substitute for professional medical judgment.
@@ -11,14 +11,14 @@ This software is designed exclusively for research and academic purposes.
 
 Any clinical or diagnostic application requires explicit written approval from the copyright holder.
 
-2. Attribution Requirement
+## 2. Attribution Requirement ##
 Any publication, presentation, or derivative work that makes use of this software must properly cite the original work:
 
 Michels, E.H.A. (2024). DIP: A Machine Learning Framework for Immune Dysregulation [Software]. DOI/Repository Link (if applicable).
 
 Failure to properly attribute the software violates the terms of this license.
 
-3. Commercial Use Restriction
+## 3. Commercial Use Restriction ##
 This software CANNOT be used for commercial purposes without prior written permission from the copyright holder.
 This includes, but is not limited to:
 
@@ -28,7 +28,7 @@ Use in paid services or consulting
 To obtain a commercial license, contact:
 📧 E.H.A. Michels – e.h.michels@amsterdamumc.nl
 
-4. Liability Disclaimer
+## 4. Liability Disclaimer ##
 THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 The authors are NOT responsible for any errors, inaccuracies, or consequences resulting from its use.
 
@@ -36,11 +36,11 @@ Under no circumstances shall the copyright holder(s) be liable for any claim, da
 
 Users assume full responsibility for validating the software's outputs and ensuring compliance with all relevant regulations.
 
-5. Modifications & Redistribution
+## 5. Modifications & Redistribution ##
 Modifications are allowed, but must retain this license statement and proper attribution.
 Redistribution of modified versions must clearly indicate that changes were made and must not imply endorsement by the original authors.
 
-6. Termination Clause
+## 6. Termination Clause ##
 Violation of any of these terms will result in immediate termination of this license, and the user must cease all use of the software.
 
 By using this software, you agree to the terms of this license. 🚀
