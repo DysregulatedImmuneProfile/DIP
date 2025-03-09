@@ -126,7 +126,8 @@ DIP_stage(test_data)
 📈 Instead of discrete stages (DIP1-3), **cDIP provides a continuous immune dysregulation score ranging from 0 to 1**.
 
 ### ⚠️ Requirement
-- The cDIP function requires Python. Please install Python at https://www.python.org/downloads/.During the installation make sure you tick the box of 'Add Python to PATH' prior to pressing 'install now'
+- The cDIP function requires Python. Please install Python at https://www.python.org/downloads/.
+- During the installation make sure you tick the box of 'Add Python to PATH' prior to pressing 'install now'
 
 #### 🧪 Input:
 - Same **3-biomarker input** as DIP_stage.
