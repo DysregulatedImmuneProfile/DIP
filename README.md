@@ -50,8 +50,8 @@ install.packages("devtools")
 devtools::install_github("ErikMichels/DIP")
 ```
 
-⚠️ The cDIP function **requires** Python. Please install Python at https://www.python.org/downloads/. During the installation make sure you TICK the box of 'Add Python to PATH' prior to pressing 'install now'. 
-⚠️ If already installed: In R-studio set 'global options' > 'Python' > 'Select Python interpreter'. 
+- ⚠️ The cDIP function **requires** Python. Please install Python at https://www.python.org/downloads/. During the installation make sure you TICK the box of 'Add Python to PATH' prior to pressing 'install now'. 
+- ⚠️ If already installed: In R-studio set 'global options' > 'Python' > 'Select Python interpreter'. 
 
 
 ---
