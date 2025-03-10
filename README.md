@@ -50,7 +50,9 @@ install.packages("devtools")
 devtools::install_github("ErikMichels/DIP")
 ```
 
-⚠️ The cDIP function **requires** Python. Please install Python at https://www.python.org/downloads/. During the installation make sure you TICK the box of 'Add Python to PATH' prior to pressing 'install now'
+⚠️ The cDIP function **requires** Python. Please install Python at https://www.python.org/downloads/. During the installation make sure you TICK the box of 'Add Python to PATH' prior to pressing 'install now'. 
+⚠️ If already installed: In R-studio set 'global options' > 'Python' > 'Select Python interpreter'. 
+
 
 ---
 
@@ -128,6 +130,7 @@ DIP_stage(test_data)
 ### ⚠️ Requirement
 - The cDIP function requires Python. Please install Python at https://www.python.org/downloads/.
 - During the installation make sure you tick the box of 'Add Python to PATH' prior to pressing 'install now'
+-  If already installed: In R-studio set 'global options' > 'Python' > 'Select Python interpreter'. 
 
 #### 🧪 Input:
 - Same **3-biomarker input** as DIP_stage.
