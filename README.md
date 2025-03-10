@@ -1,6 +1,6 @@
 # DIP - A Machine Learning Framework for Predicting the Degree of Immune Dysregulation 
 
-🚀 IP (Dysregulated Immune Profile) is an open-source machine-learning framework designed to predict the degree of immune dysregulation in patients with an infection using just three biomarkers:
+🚀 DIP (Dysregulated Immune Profile) is an open-source machine-learning framework designed to predict the degree of immune dysregulation in patients with an infection using just three biomarkers:
 
 - ✅ **Procalcitonin (PCT)**
 - ✅ **Interleukin-6 (IL-6)**
