@@ -169,8 +169,6 @@ DIP_app()
 
 ```
 
-EXAMPLE
-
 <img width="860" alt="Screenshot 2025-05-26 at 12 54 03" src="https://github.com/user-attachments/assets/cf8887e2-291b-4426-9bb8-05d522c6be7c" />
 
 
