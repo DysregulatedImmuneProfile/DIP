@@ -8,6 +8,9 @@
 
 This framework enables precise quantification of immune dysregulation, stratifying patients into Dysregulated Immune Profiles (DIP stages) or a continuous dysregulation scale. DIP stages and cDIP scores can be directly compared across cohorts and infections, as they are based on absolute biomarker concentrations without the need for scaling or transformation. Validated in multiple independent cohorts, this tool has promising applications in precision immunomodulatory therapy.
 
+🖥️ The models can be used in R with just **a single line of code**, making them easy to integrate into research workflows.  
+🖱️ For non-coding users, a **Shiny web application** is also included — just upload your Excel file and get results instantly.
+
 For questions, licensing, or commercial use, contact: 📧 E.H.A. Michels – e.h.michels@amsterdamumc.nl and T. van der Poll - t.vanderpoll@amsterdamumc.nl
 If you use this package, please cite: Michels, E.H.A. (2024). xxxxx [Software]. DOI/Repository Link (if applicable)
 
