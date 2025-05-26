@@ -152,6 +152,23 @@ cDIP_results <- cDIP(test_data)
 
 ----
 
+
+## 🖱️ For Non-Coders: An App
+
+### 🔹 DIP_app: Interactive Web Interface for Everyone
+
+For users without coding experience, a user-friendly Shiny app is included in the package.
+
+#### 💻 How to Launch
+```r
+# Load the package
+library(DIP)
+
+# Launch the Shiny app
+DIP_app()
+
+----
+
 ## 📖 Reference values from the main paper
 
 ![Reference values](https://github.com/user-attachments/assets/08caa30b-391f-4469-a03d-8b70dd6a468a)
