@@ -153,7 +153,7 @@ cDIP_results <- cDIP(test_data)
 ----
 
 
-## 🖱️ For Non-Coders: An App
+## 📌 For Non-Coders: An App solely needing an excel file upload
 
 ### 🔹 DIP_app: Interactive Web Interface for Everyone
 
@@ -166,6 +166,8 @@ library(DIP)
 
 # Launch the Shiny app
 DIP_app()
+
+```
 
 ----
 
