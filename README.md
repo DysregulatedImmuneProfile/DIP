@@ -50,7 +50,7 @@ If you use this package, please cite: Michels, E.H.A. (2024). xxxxx [Software]. 
 
 ```r
 install.packages("devtools")
-devtools::install_github("ErikMichels/DIP")
+devtools::install_github("DysregulatedImmuneProfile/DIP")
 ```
 
 - ⚠️ The cDIP function **requires** Python. Please install Python at https://www.python.org/downloads/. During the installation make sure you TICK the box of 'Add Python to PATH' prior to pressing 'install now'. 
