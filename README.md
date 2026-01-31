@@ -1,6 +1,6 @@
 # DIP - A Machine Learning Framework for Predicting the Degree of Immune Dysregulation 
 
-🚀 DIP (Dysregulated Immune Profile) is an open-source machine-learning framework designed to predict the degree of immune dysregulation in patients with an infection using just three biomarkers:
+DIP (Dysregulated Immune Profile) is an open-source machine-learning framework designed to predict the degree of immune dysregulation in patients with an infection using just three biomarkers:
 
 - ✅ **Procalcitonin (PCT)**
 - ✅ **Interleukin-6 (IL-6)**
@@ -8,21 +8,21 @@
 
 This framework enables precise quantification of immune dysregulation, stratifying patients into Dysregulated Immune Profiles (DIP stages) or a continuous dysregulation scale. DIP stages and cDIP scores can be directly compared across cohorts and infections, as they are based on absolute biomarker concentrations without the need for scaling or transformation. Validated in multiple independent cohorts, this tool has promising applications in precision immunomodulatory therapy.
 
-🖥️ The models can be used in R with just **a single line of code**, making them easy to integrate into research workflows.  
-🖱️ For non-coding users, a **Shiny web application** is also included — just upload your Excel file and get results instantly.
+- The models can be used in R with just **a single line of code**, making them easy to integrate into research workflows.  
+- For non-coding users, a **Shiny web application** is also included — just upload your Excel file and get results instantly.
 
 For questions, licensing, or commercial use, contact: 📧 E.H.A. Michels – e.h.michels@amsterdamumc.nl and T. van der Poll - t.vanderpoll@amsterdamumc.nl
 If you use this package, please cite: Michels, E.H.A. (2024). xxxxx [Software]. DOI/Repository Link (if applicable)
 
 ---
 
-## 🩸 **Why Is This Informative?**
-- 📈 Higher values of DIP/cDIP, both at admission and over time, are associated with increased mortality and secondary infections—independent of clinical severity.
-- ⏳ Monitoring the DIP or cDIP score over time provides critical prognostic insights, helping to track disease progression.
-- 🔬 It enables continuous immune system monitoring, offering a dynamic assessment of host response dysregulation rather than a single static measurement.
-- 🏥 It can help evaluate the effectiveness of immunomodulatory treatments over time, identifying patients who may benefit or fail to respond to interventions.
-- ⚕️ Reanalysis of a corticosteroid RCT showed that patients with similar clinical severity had different immune dysregulation profiles, and only those with a high DIP/cDIP benefited from corticosteroids.
-- 🔍 This highlights the potential of DIP for precision-guided immunotherapy, ensuring that treatments are targeted to the right patients at the right time.
+## **Why Is This Informative?**
+- Higher values of DIP/cDIP, both at admission and over time, are associated with increased mortality and secondary infections—independent of clinical severity.
+- Monitoring the DIP or cDIP score over time provides critical prognostic insights, helping to track disease progression.
+- It enables continuous immune system monitoring, offering a dynamic assessment of host response dysregulation rather than a single static measurement.
+- It can help evaluate the effectiveness of immunomodulatory treatments over time, identifying patients who may benefit or fail to respond to interventions.
+- Reanalysis of a corticosteroid RCT showed that patients with similar clinical severity had different immune dysregulation profiles, and only those with a high DIP/cDIP benefited from corticosteroids.
+- This highlights the potential of DIP for precision-guided immunotherapy, ensuring that treatments are targeted to the right patients at the right time.
 
 ---
 
@@ -59,7 +59,7 @@ devtools::install_github("DysregulatedImmuneProfile/DIP")
 
 ---
 
-## 🧬 How Does It Work?
+## How Does It Work?
 
 In infectious patients, immune dysregulation varies independently from clinical severity.  
 Traditional scoring systems fail to accurately reflect immune state, limiting their utility in guiding immunomodulatory treatments.
