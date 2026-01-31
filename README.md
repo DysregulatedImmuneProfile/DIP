@@ -123,6 +123,10 @@ DIP_stage(test_data)
 ```
 📊 Results will be saved in the global environment (DIP_stage_results) along with the generated plots (DIP_stage_piechart, DIP_stage_3D).
 
+The results of the test data should look like this:
+
+<img width="481" height="407" alt="Screenshot 2026-01-31 at 10 44 58" src="https://github.com/user-attachments/assets/0ccf2925-87eb-46d2-bb4a-1dc764550535" />
+
 ---
 ## 📌 Model 2 cDIP
 
@@ -179,7 +183,7 @@ DIP_app()
 
 ## 📖 Reference values from the main paper
 
-![Reference values](https://github.com/user-attachments/assets/08caa30b-391f-4469-a03d-8b70dd6a468a)
+<img width="945" height="489" alt="Screenshot 2026-01-31 at 10 47 13" src="https://github.com/user-attachments/assets/699e9907-308c-417e-a4e4-85da4ff82e0b" />
 
 ----
 
