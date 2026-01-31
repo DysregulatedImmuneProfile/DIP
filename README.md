@@ -183,7 +183,7 @@ DIP_app()
 
 ## 📖 Reference values from the main paper
 
-<img width="945" height="489" alt="Screenshot 2026-01-31 at 10 47 13" src="https://github.com/user-attachments/assets/699e9907-308c-417e-a4e4-85da4ff82e0b" />
+<img width="948" height="493" alt="Screenshot 2026-01-31 at 10 48 57" src="https://github.com/user-attachments/assets/dc1b31e2-1b90-479c-8a72-6f3b52e88d28" />
 
 ----
 
