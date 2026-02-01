@@ -184,28 +184,14 @@ DIP_stage <- function(new_data) {
     title = "3D Scatter Plot of DIP Predictions"
   )
 
-  ## Sanity check: abort if DIP distribution is (near) uniform
-  n <- nrow(results_df)
-  
-  # Count predictions in fixed order
-  prediction_counts <- table(factor(results_df$DIP,
-                                    levels = c("DIP1","DIP2","DIP3")))
-  props <- as.numeric(prediction_counts) / n
-  
-  # Tolerance depends on cohort size:
-  # - small n: allow more fluctuation
-  # - larger n: require stronger deviation from 1/3
-  tol <- if (n < 15) {
-    0.15   # very small cohorts are noisy
-  } else if (n < 50) {
-    0.08
-  } else {
-    0.05
-  }
-  
-  is_near_thirds <- all(abs(props - 1/3) < tol)
-  
-  if (is_near_thirds) {
+## Sanity check: abort if all DIP proportions are highly similar (between 30% and 36%) as this is biologically inplausible 
+n <- nrow(results_df)
+
+# Fixed-order counts so missing classes become 0 instead of disappearing
+prediction_counts <- table(factor(results_df$DIP, levels = c("DIP1", "DIP2", "DIP3")))
+props <- as.numeric(prediction_counts) / n
+
+if (all(props >= 0.30 & props <= 0.36)) {
     stop(
       "Invalid input detected: the predicted DIP distribution is approximately ",
       "1/3–1/3–1/3 across DIP1/DIP2/DIP3.\n\n",
@@ -219,7 +205,7 @@ DIP_stage <- function(new_data) {
       "    are not being masked or overwritten.\n",
       "No results were returned."
     )
-  }
+}
 
   ## Save the results and both plots in the global environment
   assign("DIP_stage_results", results_df, envir = .GlobalEnv)
