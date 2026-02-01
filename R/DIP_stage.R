@@ -184,6 +184,43 @@ DIP_stage <- function(new_data) {
     title = "3D Scatter Plot of DIP Predictions"
   )
 
+  ## Sanity check: abort if DIP distribution is (near) uniform
+  n <- nrow(results_df)
+  
+  # Count predictions in fixed order
+  prediction_counts <- table(factor(results_df$DIP,
+                                    levels = c("DIP1","DIP2","DIP3")))
+  props <- as.numeric(prediction_counts) / n
+  
+  # Tolerance depends on cohort size:
+  # - small n: allow more fluctuation
+  # - larger n: require stronger deviation from 1/3
+  tol <- if (n < 15) {
+    0.15   # very small cohorts are noisy
+  } else if (n < 50) {
+    0.08
+  } else {
+    0.05
+  }
+  
+  is_near_thirds <- all(abs(props - 1/3) < tol)
+  
+  if (is_near_thirds) {
+    stop(
+      "Invalid input detected: the predicted DIP distribution is approximately ",
+      "1/3–1/3–1/3 across DIP1/DIP2/DIP3.\n\n",
+      "This pattern is highly unlikely for valid biological input and usually ",
+      "indicates malformed data or an execution/environment issue.\n\n",
+      "Please verify:\n",
+      "  - Biomarker values are raw pg/ml (not scaled, normalized, or transformed).\n",
+      "  - Biomarker columns are truly numeric (not factors/characters).\n",
+      "  - Decimal separator is '.' (not ',').\n",
+      "  - Required packages in the DIP environment (e.g. dplyr, reticulate) ",
+      "    are not being masked or overwritten.\n",
+      "No results were returned."
+    )
+  }
+
   ## Save the results and both plots in the global environment
   assign("DIP_stage_results", results_df, envir = .GlobalEnv)
   assign("DIP_stage_piechart", pie_chart, envir = .GlobalEnv)
