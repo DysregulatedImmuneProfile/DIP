@@ -108,15 +108,36 @@ DIP_stage <- function(new_data) {
 
   ## Convert predictor data to matrix and create a DMatrix object
   predictors_matrix <- as.matrix(predictors)
+  colnames(predictors_matrix) <- c("TREM_1","IL_6","Procalcitonin")
   dmatrix <- xgboost::xgb.DMatrix(predictors_matrix)
-
-  ## Generate predictions using the loaded model
-  predictions <- predict(model, dmatrix, predcontrib = FALSE)
-  num_classes <- 3  # Ensure this matches your model's configuration
-  predicted_classes <- matrix(predictions, ncol = num_classes, byrow = TRUE)
-
-  if (any(is.na(predictions))) {
-    stop("Error: Model prediction returned NA values. Check input data format.")
+  
+  ## Generate predictions (xgboost 1.7 and >=2 compatible)
+  pred_raw <- predict(model, dmatrix, predcontrib = FALSE)
+  num_classes <- 3L  # Must match model's num_class
+  
+  # xgboost >=2: pred_raw is n x 3 matrix
+  # xgboost 1.7: pred_raw is vector length n*3
+  if (is.matrix(pred_raw)) {
+    if (ncol(pred_raw) != num_classes) {
+      stop("Unexpected prediction matrix shape: expected 3 columns.")
+    }
+    predicted_classes <- pred_raw
+  } else if (is.numeric(pred_raw)) {
+    if (length(pred_raw) %% num_classes != 0) {
+      stop("Unexpected prediction vector length for multiclass output.")
+    }
+    predicted_classes <- matrix(pred_raw, ncol = num_classes, byrow = TRUE)
+  } else {
+    stop("Unexpected return type from predict(): ", paste(class(pred_raw), collapse = ", "))
+  }
+  
+  # Safety check (replaces your old NA check)
+  if (any(!is.finite(predicted_classes))) {
+    stop("Error: Model prediction returned non-finite values (NA/Inf). Check input data format.")
+  }
+  rs <- rowSums(predicted_classes)
+  if (any(abs(rs - 1) > 1e-3)) {
+    stop("Prediction probabilities do not sum to 1 per row; output layout unexpected.")
   }
 
   ## Determine the predicted class for each observation
