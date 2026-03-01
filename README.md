@@ -157,6 +157,11 @@ cDIP_results <- cDIP(test_data)
 ```
 📊 Results will be saved in the global environment (cDIP_results) along with an interactive beeswarm plot (cDIP_plot).
 
+The results of the test data should look like this:
+
+<img width="755" height="328" alt="image" src="https://github.com/user-attachments/assets/14a7ed5f-deae-4883-9056-66587eeea71d" />
+
+
 ----
 
 
