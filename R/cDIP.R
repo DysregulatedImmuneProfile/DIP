@@ -90,7 +90,7 @@ cDIP <- function(new_data) {
   )
 
   # Ensure Python dependencies are available
-  required_packages <- c("numpy", "pandas", "scikit-learn")
+  required_packages <- c("numpy", "pandas")
   for (pkg in required_packages) {
     if (!reticulate::py_module_available(pkg)) {
       message(sprintf("Installing Python package: %s", pkg))
