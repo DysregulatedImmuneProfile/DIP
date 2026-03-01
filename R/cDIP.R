@@ -165,7 +165,7 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
 
   # Create beeswarm plot
   p <- ggplot2::ggplot(results_df, ggplot2::aes(y = cDIP, x = factor(1), color = cDIP)) +
-    ggbeeswarm::geom_beeswarm(cex = 3, method = "hex", size = 1, dodge.width = 0.5) +
+    ggbeeswarm::geom_beeswarm(cex = 3, method = "swarm", size = 1, dodge.width = 0.5) +
     ggplot2::scale_color_gradient2(
       low = "#8BCCF1",
       mid = "#896DB0",
