@@ -74,7 +74,21 @@ cDIP <- function(new_data) {
   reticulate::use_virtualenv(venv_dir, required = TRUE)
 
   # Install correct scikit-learn version to match model
-  reticulate::virtualenv_install(envname = venv_dir, packages = "scikit-learn==1.5.2", ignore_installed = TRUE)
+  # Ignore version errors as self-check does not allow 
+  ## for version differences that lead to different results
+  invisible(
+    suppressWarnings(
+      suppressMessages(
+        capture.output(
+          reticulate::virtualenv_install(
+            envname = venv_dir,
+            packages = "scikit-learn==1.5.2",
+            ignore_installed = TRUE
+          )
+        )
+      )
+    )
+  )
 
   # Ensure Python dependencies are available
   required_packages <- c("numpy", "pandas", "scikit-learn")
@@ -91,6 +105,15 @@ cDIP <- function(new_data) {
     stop("Model file not found. Please check the package installation.")
   }
 
+  # Suppress sklearn InconsistentVersionWarning during unpickling
+  # Version differences do not affect the results due to the self-check at the end of the code
+  reticulate::py_run_string("
+import warnings
+from sklearn.exceptions import InconsistentVersionWarning
+warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
+")
+
+  ## Load model
   model <- reticulate::py_load_object(model_path)
 
   # Validate input data
