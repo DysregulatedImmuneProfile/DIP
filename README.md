@@ -1,12 +1,12 @@
-# DIP - A Machine Learning Framework for Predicting the Degree of Immune Dysregulation 
+# DIP - A parsimonious machine learning framework for predicting the degree of immune dysregulation 
 
-DIP (Dysregulated Immune Profile) is an open-source machine-learning framework designed to predict the degree of immune dysregulation in patients with an infection using just three biomarkers:
+DIP (Dysregulated Immune Profile) is an open-source machine-learning framework designed to predict the degree of immune dysregulation in patients using just three biomarkers:
 
 - ✅ **Procalcitonin (PCT)**
 - ✅ **Interleukin-6 (IL-6)**
 - ✅ **Soluble TREM-1 (sTREM-1)**
 
-This framework enables precise quantification of immune dysregulation, stratifying patients into Dysregulated Immune Profiles (DIP stages) or a continuous dysregulation scale. DIP stages and cDIP scores can be directly compared across cohorts and infections, as they are based on absolute biomarker concentrations without the need for scaling or transformation. Validated in multiple independent cohorts, this tool has promising applications in precision immunomodulatory therapy.
+This framework enables quantification of immune dysregulation, stratifying patients into ordered stages of imunne dysregulation (the Dysregulated Immune Profiles; DIP) or a continuous dysregulation scale (cDIP, ranging from 0-1). DIP stages and cDIP scores can be directly compared across cohorts without the need for scaling or transformation, as they are based on absolute biomarker concentrations. Validated in multiple independent cohorts, this tool has promising applications in precision immunomodulatory therapy.
 
 - The models can be used in R with just **a single line of code**, making them easy to integrate into research workflows.  
 - For non-coding users, a **Shiny web application** is also included — just upload your Excel file and get results instantly.
@@ -54,14 +54,14 @@ devtools::install_github("DysregulatedImmuneProfile/DIP")
 ```
 
 - ⚠️ The cDIP function **requires** Python. Please install Python at https://www.python.org/downloads/. During the installation make sure you TICK the box of 'Add Python to PATH' prior to pressing 'install now'. 
-- ⚠️ If already installed: In R-studio set 'global options' > 'Python' > 'Select Python interpreter'. 
+- ⚠️ If Python is already installed: In RStudio, go to Tools → Global Options → Python, click “Select…”, and choose any available Python interpreter from the list. Apply the changes and restart RStudio if prompted to complete the linkage.
 
 
 ---
 
 ## How Does It Work?
 
-In infectious patients, immune dysregulation varies independently from clinical severity.  
+Immune dysregulation varies independently from clinical severity.  
 Traditional scoring systems fail to accurately reflect immune state, limiting their utility in guiding immunomodulatory treatments.
 
 ### 🔹 The DIP Framework Solves This By:
@@ -71,7 +71,7 @@ Traditional scoring systems fail to accurately reflect immune state, limiting th
   - DIP1 (minor dysregulation)
   - DIP2 (moderate dysregulation)
   - DIP3 (major dysregulation)
-- Providing a continuous dysregulation score (cDIP) for more granular assessment.
+- Providing a continuous dysregulation score (cDIP) for more granular assessment. The score ranges from 0 to 1 in which 0 is closely resemles immune homeostasis while 1 reflects extreme immune dysregulation.
 
 ### 🔹 Two Independent Machine Learning Models
 - The **stage-based DIP model** (DIP_stage) uses an extreme gradient boosting decision tree (XGBoost) to classify patients into DIP1, DIP2, or DIP3.
@@ -137,7 +137,7 @@ The results of the test data should look like this:
 ### ⚠️ Requirement
 - The cDIP function requires Python. Please install Python at https://www.python.org/downloads/.
 - During the installation make sure you tick the box of 'Add Python to PATH' prior to pressing 'install now'
--  If already installed: In R-studio set 'global options' > 'Python' > 'Select Python interpreter'. 
+- If Python is already installed: In RStudio, go to Tools → Global Options → Python, click “Select…”, and choose any available Python interpreter from the list. Apply the changes and restart RStudio if prompted to complete the linkage.
 
 #### 🧪 Input:
 - Same **3-biomarker input** as DIP_stage.
