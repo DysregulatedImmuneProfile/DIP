@@ -45,7 +45,9 @@ DIP_stage <- function(new_data) {
   }
   model <- xgboost::xgb.load(model_path)
 
-  message("Please ensure TREM_1, IL_6, and Procalcitonin are in pg/ml, untransformed and unscaled.")
+cat(
+  "Input reminder: TREM_1, IL_6, and Procalcitonin must be provided in pg/ml (untransformed, unscaled).\n"
+)
 
   ## Validate new_data
   if (nrow(new_data) == 0) {
