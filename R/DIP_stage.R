@@ -228,6 +228,129 @@ if (all(props >= 0.30 & props <= 0.36)) {
     )
 }
 
+  # =========================================================
+  # END-OF-FUNCTION SELF-CHECK (3 reference cases)
+  # Checks if results are exactly to those expected
+  # Disable with: options(DIP.self_check = FALSE)
+  # =========================================================
+  if (isTRUE(getOption("DIP.self_check", TRUE))) {
+    
+    .selfcheck_fail <- function(detail) {
+      stop(
+        "DIP self-check failed: the results for the built-in reference cases differ from the expected outputs.\n\n",
+        "Detail: ", detail, "\n\n",
+        "This indicates a likely package/environment misalignment or a broken/mismatched prediction model file.\n",
+        "Suggested actions:\n",
+        "  1) Reinstall the DIP package (download/install DIP again).\n",
+        "  2) Update R and restart the R session.\n",
+        "  3) Reinstall/upgrade xgboost and restart R.\n",
+        "If the problem persists, please report your R version and xgboost version.",
+        call. = FALSE
+      )
+    }
+    
+    self_test_data <- data.frame(
+      ID = 1:3,
+      TREM_1 = c(182, 400, 1000),
+      IL_6 = c(70, 5, 10000),
+      Procalcitonin = c(877, 66, 20000)
+    )
+    
+    self_expected <- data.frame(
+      ID = 1:3,
+      DIP = c("DIP2", "DIP1", "DIP3"),
+      DIP1_Prob = c(0.328465432, 0.977079332, 0.002474437),
+      DIP2_Prob = c(0.65394962, 0.02009244, 0.02060137),
+      DIP3_Prob = c(0.017584935, 0.002828272, 0.976924241)
+    )
+    
+    ## Extract predictor columns in the correct order and convert factors to numeric if needed
+    predictors_sc <- self_test_data[, expected_vars]
+    predictors_sc[] <- lapply(predictors_sc, function(x) if (is.factor(x)) as.numeric(as.factor(x)) else x)
+    if (!all(sapply(predictors_sc, is.numeric))) {
+      .selfcheck_fail("Reference biomarker columns were not numeric after coercion.")
+    }
+    
+    ## Convert predictor data to matrix and create a DMatrix object
+    predictors_matrix_sc <- as.matrix(predictors_sc)
+    colnames(predictors_matrix_sc) <- c("TREM_1","IL_6","Procalcitonin")
+    dmatrix_sc <- xgboost::xgb.DMatrix(predictors_matrix_sc)
+    
+    ## Generate predictions (xgboost 1.7 and >=2 compatible)
+    pred_raw_sc <- predict(model, dmatrix_sc, predcontrib = FALSE)
+    num_classes_sc <- 3L  # Must match model's num_class
+    
+    # xgboost >=2: pred_raw is n x 3 matrix
+    # xgboost 1.7: pred_raw is vector length n*3
+    if (is.matrix(pred_raw_sc)) {
+      if (ncol(pred_raw_sc) != num_classes_sc) {
+        .selfcheck_fail("Unexpected prediction matrix shape in self-check (expected 3 columns).")
+      }
+      predicted_classes_sc <- pred_raw_sc
+    } else if (is.numeric(pred_raw_sc)) {
+      if (length(pred_raw_sc) %% num_classes_sc != 0) {
+        .selfcheck_fail("Unexpected prediction vector length in self-check for multiclass output.")
+      }
+      predicted_classes_sc <- matrix(pred_raw_sc, ncol = num_classes_sc, byrow = TRUE)
+    } else {
+      .selfcheck_fail(paste("Unexpected return type from predict() in self-check:", paste(class(pred_raw_sc), collapse = ", ")))
+    }
+    
+    # Safety check (replaces your old NA check)
+    if (any(!is.finite(predicted_classes_sc))) {
+      .selfcheck_fail("Model returned non-finite values (NA/Inf) for the self-check reference cases.")
+    }
+    rs_sc <- rowSums(predicted_classes_sc)
+    if (any(abs(rs_sc - 1) > 1e-3)) {
+      .selfcheck_fail("Self-check probabilities do not sum to 1 per row; output layout unexpected.")
+    }
+    
+    ## Determine the predicted class for each observation
+    max_indices_sc <- apply(predicted_classes_sc, 1, which.max)
+    labels_sc <- c("DIP1", "DIP2", "DIP3")
+    labeled_predictions_sc <- labels_sc[max_indices_sc]
+    
+    ## Create a results data frame
+    results_sc <- data.frame(
+      ID = self_test_data$ID,
+      DIP = labeled_predictions_sc,
+      DIP1_Prob = predicted_classes_sc[, 1],
+      DIP2_Prob = predicted_classes_sc[, 2],
+      DIP3_Prob = predicted_classes_sc[, 3]
+    )
+    
+    # Compare DIP labels exactly
+    if (!identical(as.character(results_sc$DIP), as.character(self_expected$DIP))) {
+      .selfcheck_fail(
+        paste0(
+          "DIP label mismatch.\n",
+          "Expected: ", paste(self_expected$DIP, collapse = ", "), "\n",
+          "Got:      ", paste(results_sc$DIP, collapse = ", ")
+        )
+      )
+    }
+    
+    # Compare probabilities to 2 decimals
+    sc_round <- round(results_sc[, c("DIP1_Prob","DIP2_Prob","DIP3_Prob")], 2)
+    ex_round <- round(self_expected[, c("DIP1_Prob","DIP2_Prob","DIP3_Prob")], 2)
+    
+    if (!identical(sc_round, ex_round)) {
+      .selfcheck_fail(
+        paste0(
+          "Probability mismatch beyond 2 decimals.\n",
+          "Expected (rounded):\n",
+          paste(capture.output(print(ex_round)), collapse = "\n"), "\n",
+          "Got (rounded):\n",
+          paste(capture.output(print(sc_round)), collapse = "\n")
+        )
+      )
+    }
+  }
+  # =========================================================
+  # END END-OF-FUNCTION SELF-CHECK
+  # =========================================================
+  
+                         
   ## Save the results and both plots in the global environment
   assign("DIP_stage_results", results_df, envir = .GlobalEnv)
   assign("DIP_stage_piechart", pie_chart, envir = .GlobalEnv)
