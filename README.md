@@ -151,6 +151,13 @@ The results of the test data should look like this:
 # Load the package
 library(DIP)
 
+# Create test data
+test_data <- data.frame(
+  ID =  1:20,
+  TREM_1 = c(182, 400, 1000, 560, 230, 900, 450, 710, 620, 350, 150, 800, 250, 490, 780, 340, 900, 1100, 220, 510),
+  IL_6 = c(70, 5, 10000, 450, 88, 3000, 150, 680, 740, 50, 30, 600, 120, 470, 800, 60, 5000, 9000, 33, 200),
+  Procalcitonin = c(877, 66, 20000, 1500, 500, 10000, 800, 2700, 1800, 460, 250, 12000, 600, 1100, 14000, 350, 15000, 18000, 310, 900))
+
 # Run cDIP to get continuous immune dysregulation scores
 cDIP_results <- cDIP(test_data)
 
@@ -159,8 +166,7 @@ cDIP_results <- cDIP(test_data)
 
 The results of the test data should look like this:
 
-<img width="755" height="328" alt="image" src="https://github.com/user-attachments/assets/14a7ed5f-deae-4883-9056-66587eeea71d" />
-
+<img width="755" height="328" alt="image" src="https://github.com/user-attachments/assets/1d6b465d-fd93-47a7-a61c-30c908210f32" />
 
 ----
 
