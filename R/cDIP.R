@@ -173,6 +173,78 @@ cDIP <- function(new_data) {
 
   print(p)  # Display the plot
 
+  # =========================================================
+  # END-OF-FUNCTION SELF-CHECK (3 reference cases)
+  # Strict 4-decimal tolerance check (±0.00005)
+  # Disable with: options(cDIP.self_check = FALSE)
+  # =========================================================
+  if (isTRUE(getOption("cDIP.self_check", TRUE))) {
+    
+    .selfcheck_fail <- function(detail) {
+      stop(
+        "cDIP self-check failed: the results for the built-in reference cases differ from the expected outputs.\n\n",
+        "Detail: ", detail, "\n\n",
+        "This indicates a likely package/environment misalignment or a broken/mismatched prediction model file.\n",
+        "Suggested actions:\n",
+        "  1) Reinstall the DIP package (download/install DIP again).\n",
+        "  2) Update R and restart the R session.\n",
+        "  3) Ensure Python is properly installed and restart R.\n",
+        "  4) Recreate the DIP virtual environment (delete 'r-reticulate-env' in the DIP package folder and rerun).\n",
+        "If the problem persists, please report your R version, Python version, reticulate version, and scikit-learn version.",
+        call. = FALSE
+      )
+    }
+    
+    self_test_data <- data.frame(
+      ID = 1:3,
+      TREM_1 = c(182, 400, 1000),
+      IL_6 = c(70, 5, 10000),
+      Procalcitonin = c(877, 66, 20000)
+    )
+    
+    self_expected <- c(0.40078689, 0.08400504, 0.94155332)
+    
+    # --- Repeat prediction pipeline exactly as above ---
+    expected_vars_sc <- c("Procalcitonin", "TREM_1", "IL_6")
+    predictors_sc <- self_test_data[, expected_vars_sc]
+    
+    if (!all(sapply(predictors_sc, is.numeric))) {
+      .selfcheck_fail("Reference predictors are not numeric.")
+    }
+    
+    predictors_sc <- as.data.frame(predictors_sc)
+    predictors_py_sc <- reticulate::r_to_py(predictors_sc)
+    
+    pred_sc <- model$model$predict(predictors_py_sc)
+    
+    pred_sc_num <- tryCatch(as.numeric(pred_sc), error = function(e) NULL)
+    if (is.null(pred_sc_num) || length(pred_sc_num) != 3) {
+      .selfcheck_fail("Unexpected prediction output type/length from Python model during self-check.")
+    }
+    
+    # --- Strict 4-decimal tolerance ---
+    tol <- 0.00005
+    
+    if (any(!is.finite(pred_sc_num))) {
+      .selfcheck_fail("Non-finite values (NA/Inf) returned during self-check.")
+    }
+    
+    diffs <- abs(pred_sc_num - self_expected)
+    
+    if (any(diffs > tol)) {
+      .selfcheck_fail(
+        paste0(
+          "cDIP mismatch beyond 4-decimal tolerance (±", tol, ").\n",
+          "Expected: ", paste(self_expected, collapse = ", "), "\n",
+          "Got:      ", paste(pred_sc_num, collapse = ", "), "\n",
+          "Abs diff: ", paste(signif(diffs, 6), collapse = ", ")
+        )
+      )
+    }
+  }
+  # =========================================================
+  # END END-OF-FUNCTION SELF-CHECK
+  # =========================================================
 
   # Save results and plot to the global environment
   assign("cDIP_results", results_df, envir = .GlobalEnv)
