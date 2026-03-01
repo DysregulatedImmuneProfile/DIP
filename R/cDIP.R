@@ -48,10 +48,6 @@ cDIP <- function(new_data) {
   requireNamespace("ggbeeswarm", quietly = TRUE)
   requireNamespace("reticulate", quietly = TRUE)
 
-cat(
-  "Input reminder: TREM_1, IL_6, and Procalcitonin must be provided in pg/ml (untransformed, unscaled).\n"
-)
-  
   message("This function uses Python. The first-time use might take a few minutes. You might need to restart R afterwards.")
 
   # Define virtual environment directory
@@ -277,6 +273,7 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
   assign("cDIP_plot", p, envir = .GlobalEnv)
 
   # Message user about saved objects
+  cat( "Reminder: This function expects TREM_1, IL_6, and Procalcitonin in pg/ml (raw, untransformed values).\n")
   message("Results have been saved to the global environment as 'cDIP_results'.")
   message("The beeswarm plot has been saved as 'cDIP_plot'.")
 
