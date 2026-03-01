@@ -48,7 +48,10 @@ cDIP <- function(new_data) {
   requireNamespace("ggbeeswarm", quietly = TRUE)
   requireNamespace("reticulate", quietly = TRUE)
 
-  message("Please ensure TREM_1, IL_6, and Procalcitonin are in pg/ml, untransformed and unscaled.")
+cat(
+  "Input reminder: TREM_1, IL_6, and Procalcitonin must be provided in pg/ml (untransformed, unscaled).\n"
+)
+  
   message("This function uses Python. The first-time use might take a few minutes. You might need to restart R afterwards.")
 
   # Define virtual environment directory
