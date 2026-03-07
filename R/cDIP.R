@@ -273,7 +273,7 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
   assign("cDIP_plot", p, envir = .GlobalEnv)
 
   # Message user about saved objects
-  cat( "Reminder: This function expects TREM_1, IL_6, and Procalcitonin in pg/ml (raw, untransformed values).\n")
+  message( "Just a reminder: This function expects TREM_1, IL_6, and Procalcitonin in pg/ml (raw, untransformed values).\n")
   message("Results have been saved to the global environment as 'cDIP_results'.")
   message("The beeswarm plot has been saved as 'cDIP_plot'.")
 
