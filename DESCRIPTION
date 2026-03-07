@@ -9,14 +9,14 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends:
-    R (>= 4.0.0),
-    reticulate
+    R (>= 4.0.0)
 Imports:
     plotly,
     ggplot2,
     stats,
     xgboost,
     scales,
-    ggbeeswarm
+    ggbeeswarm,
+    reticulate
 
 
