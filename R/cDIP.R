@@ -15,36 +15,20 @@
 #' @name cDIP
 #' @param new_data A data frame containing ID, TREM_1, IL_6, and Procalcitonin.
 #' @return A data frame with the predicted continuous immune dysregulation score (cDIP).
-#' @importFrom reticulate use_virtualenv virtualenv_create virtualenv_install py_load_object py_run_string py_config py_available r_to_py
+#' @importFrom reticulate py_load_object py_run_string r_to_py
 #' @importFrom ggplot2 ggplot aes scale_color_gradient2 theme_minimal expand_limits coord_flip ggtitle
 #' @importFrom scales squish
 #' @importFrom ggbeeswarm geom_beeswarm
 #' @export
 
 cDIP <- function(new_data) {
-  Sys.setenv(PIP_DISABLE_PIP_VERSION_CHECK = "1")
-
   requireNamespace("ggplot2", quietly = TRUE)
   requireNamespace("ggbeeswarm", quietly = TRUE)
   requireNamespace("reticulate", quietly = TRUE)
   requireNamespace("scales", quietly = TRUE)
 
-  message("This function uses Python. The first-time use might take a few minutes. You might need to restart R afterwards.")
-
   .fail <- function(...) {
     stop(..., call. = FALSE)
-  }
-
-  .norm_path <- function(x) {
-    tryCatch(
-      normalizePath(x, winslash = "/", mustWork = FALSE),
-      error = function(e) x
-    )
-  }
-
-  package_base_dir <- system.file(package = "DIP")
-  if (package_base_dir == "") {
-    .fail("Could not locate the installed DIP package directory.")
   }
 
   model_path <- system.file("extdata/python", "model.pkl", package = "DIP")
@@ -52,67 +36,13 @@ cDIP <- function(new_data) {
     .fail("Model file not found. Please reinstall the DIP package.")
   }
 
-  # Keep the venv in the package folder
-  venv_dir <- file.path(package_base_dir, "r-reticulate-env")
-
-  expected_candidates <- c(
-    file.path(venv_dir, "bin", "python"),
-    file.path(venv_dir, "Scripts", "python.exe")
-  )
-  expected_candidates_norm <- unique(vapply(expected_candidates, .norm_path, character(1)))
-
-  if (!dir.exists(venv_dir)) {
-    message("Creating a new virtual environment...")
-    reticulate::virtualenv_create(envname = venv_dir)
-  }
-
-  # If Python is not yet initialized, request the DIP environment.
-  # Suppress the harmless reticulate warning about overriding a prior use_python() request.
-  if (!reticulate::py_available(initialize = FALSE)) {
-    suppressWarnings(
-      reticulate::use_virtualenv(venv_dir, required = TRUE)
-    )
-  }
-
-  cfg <- reticulate::py_config()
-  active_python_norm <- .norm_path(cfg$python)
-
-  invisible(
-    suppressWarnings(
-      suppressMessages(
-        capture.output(
-          reticulate::virtualenv_install(
-            envname = venv_dir,
-            packages = c("numpy", "pandas", "scikit-learn==1.5.2"),
-            ignore_installed = TRUE
-          )
-        )
-      )
-    )
-  )
-
-  sklearn_ok <- tryCatch({
-    reticulate::py_run_string("import sklearn")
-    TRUE
-  }, error = function(e) FALSE)
-
-  if (!sklearn_ok) {
-    .fail(
-      paste0(
-        "DIP could not import scikit-learn from the active Python environment.\n",
-        "Active interpreter:\n  ", active_python_norm, "\n\n",
-        "Expected DIP environment:\n  ", venv_dir, "\n\n",
-        "Please restart R and rerun cDIP().\n",
-        "If the problem persists, delete this folder and try again:\n  ", venv_dir
-      )
-    )
-  }
-
-  reticulate::py_run_string("
+  reticulate::py_run_string(
+    "
 import warnings
 from sklearn.exceptions import InconsistentVersionWarning
 warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
-")
+"
+  )
 
   model <- tryCatch(
     reticulate::py_load_object(model_path),
@@ -179,8 +109,8 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
     cDIP = prediction
   )
 
-  p <- ggplot2::ggplot(results_df, ggplot2::aes(y = cDIP, x = factor(1), color = cDIP)) +
-    ggbeeswarm::geom_beeswarm(cex = 3, method = "swarm", size = 1, dodge.width = 0.5) +
+  p <- ggplot2::ggplot(results_df,ggplot2::aes(y = cDIP, x = factor(1), color = cDIP)) +
+    ggbeeswarm::geom_beeswarm(cex = 3, method = "swarm", size = 1,dodge.width = 0.5) +
     ggplot2::scale_color_gradient2(
       low = "#8BCCF1",
       mid = "#896DB0",
@@ -211,17 +141,16 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
   print(p)
 
   if (isTRUE(getOption("cDIP.self_check", TRUE))) {
-
     .selfcheck_fail <- function(detail) {
       .fail(
         "cDIP self-check failed: the results for the built-in reference cases differ from the expected outputs.\n\n",
-        "Detail: ", detail, "\n\n",
+        "Detail: ",
+        detail,
+        "\n\n",
         "This indicates a likely package/environment misalignment or a broken/mismatched prediction model file.\n",
         "Suggested actions:\n",
         "  1) Reinstall the DIP package.\n",
-        "  2) Restart R.\n",
-        "  3) Ensure Python is properly installed and restart R.\n",
-        "  4) Recreate the DIP virtual environment and rerun.\n",
+        "  2) Restart R and rerun.\n",
         "If the problem persists, please report your R version, Python version, reticulate version, and scikit-learn version."
       )
     }
@@ -254,8 +183,8 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
     if (any(diffs > tol)) {
       .selfcheck_fail(
         paste0(
-          "cDIP mismatch beyond 4-decimal tolerance (±", tol, ").\n",
-          "Expected: ", paste(self_expected, collapse = ", "), "\n",
+          "cDIP mismatch beyond 4-decimal tolerance (±",tol, ").\n",
+          "Expected: ", paste(self_expected, collapse = ", "),"\n",
           "Got:      ", paste(pred_sc_num, collapse = ", "), "\n",
           "Abs diff: ", paste(signif(diffs, 6), collapse = ", ")
         )
