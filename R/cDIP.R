@@ -36,7 +36,6 @@ cDIP <- function(new_data) {
   py_path <- tryCatch(reticulate::py_config()$python, error = function(e) {
     "<unavailable>"
   })
-  message("DIP diagnostics - Active Python interpreter: ", py_path)
 
   if (!isTRUE(deps_ok)) {
     .fail(
@@ -49,6 +48,7 @@ cDIP <- function(new_data) {
         "Automatic installation uses the active Python interpreter.\n",
         "If you are in a restricted environment, configure before loading DIP:\n",
         "  Sys.setenv(RETICULATE_USE_UV = '0')\n",
+        "  Sys.setenv(RETICULATE_USE_MANAGED_VENV = 'no')\n",
         "  Sys.setenv(RETICULATE_PYTHON = '/path/to/python')\n",
         "Then restart R and rerun. If needed, install required packages in that Python environment manually."
       )
