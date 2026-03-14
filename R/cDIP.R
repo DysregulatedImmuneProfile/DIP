@@ -38,6 +38,17 @@ cDIP <- function(new_data) {
   })
 
   if (!isTRUE(deps_ok)) {
+    if (py_path == "<unavailable>") {
+      action_msg <- paste0(
+        "If you do not have Python installed, please install it first (e.g. from https://www.python.org/downloads/).\n",
+        "If it is installed but not found, you can manually point to it before loading DIP:\n"
+      )
+    } else {
+      action_msg <- paste0(
+        "If you are in a restricted environment, configure before loading DIP:\n"
+      )
+    }
+
     .fail(
       paste0(
         "Python dependencies for DIP are missing and could not be installed automatically.\n\n",
@@ -45,8 +56,8 @@ cDIP <- function(new_data) {
         py_path,
         "\n",
         "Required packages: numpy, pandas, scikit-learn (== 1.5.2).\n",
-        "Automatic installation uses the active Python interpreter.\n",
-        "If you are in a restricted environment, configure before loading DIP:\n",
+        "Automatic installation uses the active Python interpreter.\n\n",
+        action_msg,
         "  Sys.setenv(RETICULATE_USE_UV = '0')\n",
         "  Sys.setenv(RETICULATE_USE_MANAGED_VENV = 'no')\n",
         "  Sys.setenv(RETICULATE_PYTHON = '/path/to/python')\n",
