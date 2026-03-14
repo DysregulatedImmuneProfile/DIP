@@ -131,7 +131,9 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
   prediction <- tryCatch(
     as.numeric(reticulate::py_to_r(prediction)),
     error = function(e) {
-      .fail("Prediction output could not be converted to numeric.")
+      .fail(
+        "Prediction output could not be converted to numeric. If you just initialized Python or DIP dependencies for the first time, please restart R and try again."
+      )
     }
   )
 
@@ -216,7 +218,7 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
     )
     if (is.null(pred_sc_num) || length(pred_sc_num) != 3) {
       .selfcheck_fail(
-        "Unexpected prediction output type/length from Python model during self-check."
+        "Unexpected prediction output type/length from Python model during self-check. If you just initialized Python or DIP dependencies for the first time, please restart R and try again."
       )
     }
 
