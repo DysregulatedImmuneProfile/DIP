@@ -29,10 +29,21 @@
   # Step 2: Fallback (use pip in the active interpreter)
   install_ok <- tryCatch(
     {
-      reticulate::py$dip_packages_to_install <- packages_to_install
-      reticulate::py_run_string(
-        "import subprocess, sys\nfor pkg in dip_packages_to_install:\n    subprocess.check_call([sys.executable, '-m', 'pip', 'install', pkg])"
+      # Join the array of packages into a Python-friendly string, e.g. "'numpy', 'pandas'"
+      pkg_string <- paste(sprintf("'%s'", packages_to_install), collapse = ", ")
+
+      # Build the Python script to run
+      py_script <- paste0(
+        "import subprocess\n",
+        "import sys\n",
+        "packages = [",
+        pkg_string,
+        "]\n",
+        "for pkg in packages:\n",
+        "    subprocess.check_call([sys.executable, '-m', 'pip', 'install', pkg])"
       )
+
+      reticulate::py_run_string(py_script)
       TRUE
     },
     error = function(e) {
