@@ -32,10 +32,13 @@ cDIP <- function(new_data) {
   }
 
   deps_ok <- tryCatch(.ensure_dip_python_deps(), error = function(e) FALSE)
+
+  py_path <- tryCatch(reticulate::py_config()$python, error = function(e) {
+    "<unavailable>"
+  })
+  message("DIP diagnostics - Active Python interpreter: ", py_path)
+
   if (!isTRUE(deps_ok)) {
-    py_path <- tryCatch(reticulate::py_config()$python, error = function(e) {
-      "<unavailable>"
-    })
     .fail(
       paste0(
         "Python dependencies for DIP are missing and could not be installed automatically.\n\n",
