@@ -56,3 +56,9 @@
 
   invisible(length(still_missing) == 0)
 }
+
+.onLoad <- function(libname, pkgname) {
+  # Avoid selecting/initializing Python at package load time.
+  # Python dependency resolution is performed lazily in cDIP().
+  invisible(NULL)
+}
