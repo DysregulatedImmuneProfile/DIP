@@ -31,6 +31,20 @@ cDIP <- function(new_data) {
     stop(..., call. = FALSE)
   }
 
+  deps_ok <- tryCatch(.ensure_dip_python_deps(), error = function(e) FALSE)
+  if (!isTRUE(deps_ok)) {
+    .fail(
+      paste0(
+        "Python dependencies for DIP are missing and could not be installed automatically.\n\n",
+        "Required packages: numpy, pandas, scikit-learn (== 1.5.2).\n",
+        "If you are in a restricted environment, configure before loading DIP:\n",
+        "  Sys.setenv(RETICULATE_USE_UV = '0')\n",
+        "  Sys.setenv(RETICULATE_PYTHON = '/path/to/python')\n",
+        "Then ensure the required Python packages are installed in that Python environment."
+      )
+    )
+  }
+
   model_path <- system.file("extdata/python", "model.pkl", package = "DIP")
   if (!file.exists(model_path)) {
     .fail("Model file not found. Please reinstall the DIP package.")
@@ -50,8 +64,11 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
       .fail(
         paste0(
           "Failed to load the prediction model.\n",
-          "Model path:\n  ", model_path, "\n\n",
-          "Underlying error:\n", conditionMessage(e)
+          "Model path:\n  ",
+          model_path,
+          "\n\n",
+          "Underlying error:\n",
+          conditionMessage(e)
         )
       )
     }
@@ -70,12 +87,17 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
   expected_vars <- c("Procalcitonin", "TREM_1", "IL_6")
   missing_vars <- setdiff(expected_vars, names(new_data))
   if (length(missing_vars) > 0) {
-    .fail("Error: Missing required columns: ", paste(missing_vars, collapse = ", "))
+    .fail(
+      "Error: Missing required columns: ",
+      paste(missing_vars, collapse = ", ")
+    )
   }
 
   rows_with_missing <- new_data$ID[rowSums(is.na(new_data[expected_vars])) > 0]
   if (length(rows_with_missing) > 0) {
-    message("Patients with missing classifiers are omitted. Affected patient IDs:")
+    message(
+      "Patients with missing classifiers are omitted. Affected patient IDs:"
+    )
     message(paste(rows_with_missing, collapse = " "))
     new_data <- new_data[!new_data$ID %in% rows_with_missing, , drop = FALSE]
   }
@@ -98,7 +120,9 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
 
   prediction <- tryCatch(
     as.numeric(prediction),
-    error = function(e) .fail("Prediction output could not be converted to numeric.")
+    error = function(e) {
+      .fail("Prediction output could not be converted to numeric.")
+    }
   )
 
   results_df <- data.frame(
@@ -109,8 +133,16 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
     cDIP = prediction
   )
 
-  p <- ggplot2::ggplot(results_df,ggplot2::aes(y = cDIP, x = factor(1), color = cDIP)) +
-    ggbeeswarm::geom_beeswarm(cex = 3, method = "swarm", size = 1,dodge.width = 0.5) +
+  p <- ggplot2::ggplot(
+    results_df,
+    ggplot2::aes(y = cDIP, x = factor(1), color = cDIP)
+  ) +
+    ggbeeswarm::geom_beeswarm(
+      cex = 3,
+      method = "swarm",
+      size = 1,
+      dodge.width = 0.5
+    ) +
     ggplot2::scale_color_gradient2(
       low = "#8BCCF1",
       mid = "#896DB0",
@@ -170,7 +202,9 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
 
     pred_sc_num <- tryCatch(as.numeric(pred_sc), error = function(e) NULL)
     if (is.null(pred_sc_num) || length(pred_sc_num) != 3) {
-      .selfcheck_fail("Unexpected prediction output type/length from Python model during self-check.")
+      .selfcheck_fail(
+        "Unexpected prediction output type/length from Python model during self-check."
+      )
     }
 
     if (any(!is.finite(pred_sc_num))) {
@@ -183,10 +217,17 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
     if (any(diffs > tol)) {
       .selfcheck_fail(
         paste0(
-          "cDIP mismatch beyond 4-decimal tolerance (±",tol, ").\n",
-          "Expected: ", paste(self_expected, collapse = ", "),"\n",
-          "Got:      ", paste(pred_sc_num, collapse = ", "), "\n",
-          "Abs diff: ", paste(signif(diffs, 6), collapse = ", ")
+          "cDIP mismatch beyond 4-decimal tolerance (±",
+          tol,
+          ").\n",
+          "Expected: ",
+          paste(self_expected, collapse = ", "),
+          "\n",
+          "Got:      ",
+          paste(pred_sc_num, collapse = ", "),
+          "\n",
+          "Abs diff: ",
+          paste(signif(diffs, 6), collapse = ", ")
         )
       )
     }
@@ -195,8 +236,12 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
   assign("cDIP_results", results_df, envir = .GlobalEnv)
   assign("cDIP_plot", p, envir = .GlobalEnv)
 
-  message("Just a reminder: this function expects TREM_1, IL_6, and Procalcitonin in pg/ml (raw, untransformed values).")
-  message("Results have been saved to the global environment as 'cDIP_results'.")
+  message(
+    "Just a reminder: this function expects TREM_1, IL_6, and Procalcitonin in pg/ml (raw, untransformed values)."
+  )
+  message(
+    "Results have been saved to the global environment as 'cDIP_results'."
+  )
   message("The beeswarm plot has been saved as 'cDIP_plot'.")
 
   invisible(results_df)
