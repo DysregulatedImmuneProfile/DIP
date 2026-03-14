@@ -129,7 +129,7 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
   )
 
   prediction <- tryCatch(
-    as.numeric(prediction),
+    as.numeric(reticulate::py_to_r(prediction)),
     error = function(e) {
       .fail("Prediction output could not be converted to numeric.")
     }
@@ -210,7 +210,10 @@ warnings.filterwarnings('ignore', category=InconsistentVersionWarning)
     predictors_py_sc <- reticulate::r_to_py(as.data.frame(predictors_sc))
     pred_sc <- model$model$predict(predictors_py_sc)
 
-    pred_sc_num <- tryCatch(as.numeric(pred_sc), error = function(e) NULL)
+    pred_sc_num <- tryCatch(
+      as.numeric(reticulate::py_to_r(pred_sc)),
+      error = function(e) NULL
+    )
     if (is.null(pred_sc_num) || length(pred_sc_num) != 3) {
       .selfcheck_fail(
         "Unexpected prediction output type/length from Python model during self-check."
