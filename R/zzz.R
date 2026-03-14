@@ -14,10 +14,13 @@
     }
   )
 
-  # Check which modules are still missing
-  missing_modules <- required_modules[
-    !vapply(required_modules, reticulate::py_module_available, logical(1))
-  ]
+  # Check if we can resolve the missing modules with the current Python session
+  missing_modules <- c()
+  for (req in required_modules) {
+    if (!reticulate::py_module_available(req)) {
+      missing_modules <- c(missing_modules, req)
+    }
+  }
 
   # If none are missing, we are done
   if (length(missing_modules) == 0) {
@@ -61,9 +64,12 @@
   }
 
   # Finale check
-  still_missing <- required_modules[
-    !vapply(required_modules, reticulate::py_module_available, logical(1))
-  ]
+  still_missing <- c()
+  for (req in required_modules) {
+    if (!reticulate::py_module_available(req)) {
+      still_missing <- c(still_missing, req)
+    }
+  }
 
   invisible(length(still_missing) == 0)
 }
