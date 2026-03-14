@@ -33,14 +33,21 @@ cDIP <- function(new_data) {
 
   deps_ok <- tryCatch(.ensure_dip_python_deps(), error = function(e) FALSE)
   if (!isTRUE(deps_ok)) {
+    py_path <- tryCatch(reticulate::py_config()$python, error = function(e) {
+      "<unavailable>"
+    })
     .fail(
       paste0(
         "Python dependencies for DIP are missing and could not be installed automatically.\n\n",
+        "Active Python: ",
+        py_path,
+        "\n",
         "Required packages: numpy, pandas, scikit-learn (== 1.5.2).\n",
+        "Automatic installation uses the active Python interpreter.\n",
         "If you are in a restricted environment, configure before loading DIP:\n",
         "  Sys.setenv(RETICULATE_USE_UV = '0')\n",
         "  Sys.setenv(RETICULATE_PYTHON = '/path/to/python')\n",
-        "Then ensure the required Python packages are installed in that Python environment."
+        "Then restart R and rerun. If needed, install required packages in that Python environment manually."
       )
     )
   }

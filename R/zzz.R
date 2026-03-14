@@ -11,12 +11,10 @@
 )
 
 .ensure_dip_python_deps <- function() {
-  missing_modules <- names(.dip_module_to_package)[
-    !vapply(
-      names(.dip_module_to_package),
-      reticulate::py_module_available,
-      logical(1)
-    )
+  required_modules <- names(.dip_module_to_package)
+
+  missing_modules <- required_modules[
+    !vapply(required_modules, reticulate::py_module_available, logical(1))
   ]
 
   if (length(missing_modules) == 0) {
@@ -27,12 +25,15 @@
 
   install_ok <- tryCatch(
     {
-      reticulate::py_install(packages_to_install, pip = TRUE)
+      reticulate::py$dip_packages_to_install <- packages_to_install
+      reticulate::py_run_string(
+        "import subprocess, sys\nfor pkg in dip_packages_to_install:\n    subprocess.check_call([sys.executable, '-m', 'pip', 'install', pkg])"
+      )
       TRUE
     },
     error = function(e) {
       message(
-        "DIP could not auto-install missing Python packages (",
+        "DIP could not auto-install missing Python packages in the active Python interpreter (",
         conditionMessage(e),
         ")."
       )
@@ -44,29 +45,15 @@
     return(invisible(FALSE))
   }
 
-  still_missing <- names(.dip_module_to_package)[
-    !vapply(
-      names(.dip_module_to_package),
-      reticulate::py_module_available,
-      logical(1)
-    )
+  still_missing <- required_modules[
+    !vapply(required_modules, reticulate::py_module_available, logical(1))
   ]
 
   invisible(length(still_missing) == 0)
 }
 
 .onLoad <- function(libname, pkgname) {
-  # Declare Python package requirements for automatic resolution.
-  # In restricted environments this may fail; cDIP() will also attempt
-  # to install missing packages in the selected Python environment.
-  tryCatch(
-    reticulate::py_require(.dip_python_requirements),
-    error = function(e) {
-      packageStartupMessage(
-        "DIP: automatic Python dependency setup was not completed (",
-        conditionMessage(e),
-        ")."
-      )
-    }
-  )
+  # Avoid selecting/initializing Python at package load time.
+  # Python dependency resolution is performed lazily in cDIP().
+  invisible(NULL)
 }
