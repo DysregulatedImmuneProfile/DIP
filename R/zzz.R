@@ -32,10 +32,17 @@
   # Returns both status and error message for better diagnostics.
   tryCatch(
     {
-      import_code <- paste(
-        sprintf("import %s", .dip_required_modules),
-        collapse = "\n"
-      )
+      import_code <- "
+import importlib
+try:
+    for m in ['numpy', 'pandas', 'sklearn']:
+        importlib.import_module(m)
+    import sklearn
+    if sklearn.__version__ != '1.5.2':
+        raise ImportError(f'scikit-learn==1.5.2 is required, but found {sklearn.__version__}')
+except Exception as e:
+    raise ImportError(str(e))
+"
       reticulate::py_run_string(import_code)
       list(ok = TRUE, error = NULL)
     },
@@ -58,9 +65,7 @@
   if (!py_already_active && use_uv) {
     tryCatch(
       reticulate::py_require(.dip_py_require_packages),
-      error = function(e) {
-        # Silently catch and let it fall through to the fallback checks
-      }
+      error = function(e) {}
     )
   }
 
