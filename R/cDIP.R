@@ -12,10 +12,6 @@
 #' A beeswarm plot is generated to visualize the distribution of cDIP scores.
 #' The prediction results and the plot are saved to the global environment.
 #'
-#' IMPORTANT:
-#' Compatibility is determined by the internal reference validation, not by a fixed
-#' scikit-learn version. Any scikit-learn version is accepted if the built-in
-#' quality-control predictions match the expected reference outputs within tolerance.
 #'
 #' @name cDIP
 #' @param new_data A data frame containing ID, TREM_1, IL_6, and Procalcitonin.
@@ -391,7 +387,7 @@ if (length(missing_vars) > 0) {
   .fail("The input data are missing required column(s): ", paste(missing_vars, collapse = ", "), ". Please provide ID, TREM_1, IL_6, and Procalcitonin.")
 }
 
-required_packages <- c("numpy", "pandas", "scikit-learn")
+required_packages <- c("numpy", "pandas", "scikit-learn==1.5.2")
 
 python_ok <- FALSE
 managed_error <- NULL
