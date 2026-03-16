@@ -54,8 +54,6 @@ devtools::install_github("DysregulatedImmuneProfile/DIP")
 ```
 
 - ⚠️ The cDIP model runs a **Python** machine-learning model through the reticulate package. In most cases, the required Python environment will be automatically configured when the function is first used. If automatic setup is not possible (for example on restricted institutional systems), the function will provide instructions on how to install or link Python manually.
-- Install message: Please install Python at https://www.python.org/downloads/. During the installation make sure you TICK the box of 'Add Python to PATH' prior to pressing 'install now'. 
-- Linking message: If Python is already installed: In RStudio, go to Tools → Global Options → Python, click “Select…”, and choose any available Python interpreter from the list. Apply the changes and restart RStudio if prompted to complete the linkage.
 
 
 ---
