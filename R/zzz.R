@@ -4,41 +4,68 @@
   sklearn = "scikit-learn==1.5.2"
 )
 
-.ensure_dip_python_deps <- function() {
-  required_modules <- names(.dip_module_to_package)
-  # Step 1: Try to use modern reticulate  (with uv if possible)
+.dip_required_modules <- names(.dip_module_to_package)
+
+.dip_python_import_status <- function() {
+  # Try to run a simple script that explicitly imports everything.
+  # Returns both status and error message for better diagnostics.
   tryCatch(
-    reticulate::py_require(unname(.dip_module_to_package)),
+    {
+      import_code <- paste(
+        sprintf("import %s", .dip_required_modules),
+        collapse = "\n"
+      )
+      reticulate::py_run_string(import_code)
+      list(ok = TRUE, error = NULL)
+    },
     error = function(e) {
-      # Error, we go back to the fallback method
+      list(ok = FALSE, error = conditionMessage(e))
     }
   )
+}
 
-  # Check if we can resolve the missing modules with the current Python session
-  missing_modules <- c()
-  for (req in required_modules) {
-    if (!reticulate::py_module_available(req)) {
-      missing_modules <- c(missing_modules, req)
-    }
+.dip_python_imports_ok <- function() {
+  isTRUE(.dip_python_import_status()$ok)
+}
+
+.ensure_dip_python_deps <- function() {
+  py_already_active <- reticulate::py_available(initialize = FALSE)
+  use_uv <- Sys.getenv("RETICULATE_USE_UV", unset = "1") != "0"
+
+  # STEP 1: If Python is NOT active, prioritize uv via py_require FIRST.
+  # Do this BEFORE checking import status, so we don't accidentally initialize a broken Python.
+  if (!py_already_active && use_uv) {
+    tryCatch(
+      reticulate::py_require(unname(.dip_module_to_package)),
+      error = function(e) {
+        # Silently catch and let it fall through to the fallback checks
+      }
+    )
   }
 
-  # If none are missing, we are done
-  if (length(missing_modules) == 0) {
+  # STEP 2: Now that the environment is requested/built, check if imports actually work.
+  import_status <- .dip_python_import_status()
+  if (isTRUE(import_status$ok)) {
     return(invisible(TRUE))
   }
 
-  packages_to_install <- unname(.dip_module_to_package[missing_modules])
+  # STEP 3: Fallback - use pip in the active interpreter
+  packages_to_install <- unname(.dip_module_to_package)
 
-  # Step 2: Fallback (use pip in the active interpreter)
   install_ok <- tryCatch(
     {
-      # Join the array of packages into a Python-friendly string, e.g. "'numpy', 'pandas'"
       pkg_string <- paste(sprintf("'%s'", packages_to_install), collapse = ", ")
 
-      # Build the Python script to run
+      # Build the Python script to run.
+      # Notice the try/except block that automatically bootstraps pip if it is missing!
       py_script <- paste0(
         "import subprocess\n",
         "import sys\n",
+        "try:\n",
+        "    import pip\n",
+        "except ImportError:\n",
+        "    import ensurepip\n",
+        "    ensurepip.bootstrap()\n",
         "packages = [",
         pkg_string,
         "]\n",
@@ -63,15 +90,19 @@
     return(invisible(FALSE))
   }
 
-  # Finale check
-  still_missing <- c()
-  for (req in required_modules) {
-    if (!reticulate::py_module_available(req)) {
-      still_missing <- c(still_missing, req)
-    }
+  # Final check: confirm imports now work in this session.
+  import_status <- .dip_python_import_status()
+  if (!isTRUE(import_status$ok)) {
+    message(
+      "DIP installed Python packages, but import checks still fail in the current session. ",
+      "Please restart R and retry, or install packages manually in the active Python environment.\n",
+      "Underlying Python import error: ",
+      import_status$error
+    )
+    return(invisible(FALSE))
   }
 
-  invisible(length(still_missing) == 0)
+  invisible(TRUE)
 }
 
 .onLoad <- function(libname, pkgname) {

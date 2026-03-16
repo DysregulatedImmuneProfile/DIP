@@ -31,37 +31,85 @@ cDIP <- function(new_data) {
     stop(..., call. = FALSE)
   }
 
+  py_already_active <- reticulate::py_available(initialize = FALSE)
+
+  if (py_already_active) {
+    if (!.dip_python_imports_ok()) {
+      message(
+        "A Python session is already active in R, but missing required DIP packages."
+      )
+      message(
+        "Attempting to install missing modules into the active environment..."
+      )
+    }
+  }
+
   deps_ok <- tryCatch(.ensure_dip_python_deps(), error = function(e) FALSE)
 
   py_path <- tryCatch(reticulate::py_config()$python, error = function(e) {
     "<unavailable>"
   })
 
+  # Define the clean display path once, right here
+  display_path <- if (py_path == "<unavailable>") {
+    "Not found or failed to initialize"
+  } else {
+    py_path
+  }
+
+  import_status <- tryCatch(
+    .dip_python_import_status(),
+    error = function(e) list(ok = FALSE, error = conditionMessage(e))
+  )
+  import_error_msg <- if (
+    !isTRUE(import_status$ok) && !is.null(import_status$error)
+  ) {
+    paste0("\n\nUnderlying Python import error:\n", import_status$error)
+  } else {
+    ""
+  }
+
+  if (py_already_active && !isTRUE(deps_ok)) {
+    .fail(
+      paste0(
+        "A Python session is already active and required DIP packages are still unavailable.\n\n",
+        "Active Python: ",
+        display_path,
+        "\n",
+        "Required packages: numpy, pandas, scikit-learn (== 1.5.2).\n\n",
+        "Because Python is already locked for this R session, automatic environment switching is limited.\n",
+        "Please either:\n",
+        "  1) Restart R and run DIP::cDIP(...) first, OR\n",
+        "  2) Install required packages into this active Python environment manually.",
+        import_error_msg
+      )
+    )
+  }
+
   if (!isTRUE(deps_ok)) {
-    if (py_path == "<unavailable>") {
-      action_msg <- paste0(
-        "If you do not have Python installed, please install it first (e.g. from https://www.python.org/downloads/).\n",
-        "If it is installed but not found, you can manually point to it before loading DIP:\n"
-      )
+    # Clean up the output so it doesn't just say "<unavailable>"
+    display_path <- if (py_path == "<unavailable>") {
+      "Not found or failed to initialize"
     } else {
-      action_msg <- paste0(
-        "If you are in a restricted environment, configure before loading DIP:\n"
-      )
+      py_path
     }
 
     .fail(
       paste0(
         "Python dependencies for DIP are missing and could not be installed automatically.\n\n",
         "Active Python: ",
-        py_path,
+        display_path,
         "\n",
-        "Required packages: numpy, pandas, scikit-learn (== 1.5.2).\n",
-        "Automatic installation uses the active Python interpreter.\n\n",
-        action_msg,
+        "Required packages: numpy, pandas, scikit-learn (== 1.5.2).\n\n",
+        "HOW TO FIX THIS:\n",
+        "  1) If you do not have Python installed: Download and install it from https://www.python.org/downloads/\n",
+        "  2) If Python is installed or you are in a secure hospital environment: point to the existing Python installation.\n\n",
+        "Once Python is available on your machine, point R to it before loading DIP by running:\n",
         "  Sys.setenv(RETICULATE_USE_UV = '0')\n",
         "  Sys.setenv(RETICULATE_USE_MANAGED_VENV = 'no')\n",
-        "  Sys.setenv(RETICULATE_PYTHON = '/path/to/python')\n",
-        "Then restart R and rerun. If needed, install required packages in that Python environment manually."
+        "  Sys.setenv(RETICULATE_PYTHON = '/path/to/python')\n\n",
+        "Then restart R and rerun your code. If needed, install the required packages in that Python environment manually.",
+        import_error_msg
       )
     )
   }
