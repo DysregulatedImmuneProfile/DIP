@@ -17,6 +17,6 @@ Imports:
     xgboost,
     scales,
     ggbeeswarm,
-    reticulate
+    reticulate (>= 1.35.0)
 
 
