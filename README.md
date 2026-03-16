@@ -6,7 +6,7 @@ DIP (Dysregulated Immune Profile) is an open-source machine-learning framework d
 - ✅ **Interleukin-6 (IL-6)**
 - ✅ **Soluble TREM-1 (sTREM-1)**
 
-This framework enables quantification of immune dysregulation, stratifying patients into ordered stages of imunne dysregulation (the Dysregulated Immune Profiles; DIP) or a continuous dysregulation scale (cDIP, ranging from 0-1). DIP stages and cDIP scores can be directly compared across cohorts without the need for scaling or transformation, as they are based on absolute biomarker concentrations. Validated in multiple independent cohorts, this tool has promising applications in precision immunomodulatory therapy.
+This framework enables quantification of immune dysregulation, stratifying patients into ordered stages of immune dysregulation (the Dysregulated Immune Profiles; DIP) or a continuous dysregulation scale (cDIP, ranging from 0-1). DIP stages and cDIP scores can be directly compared across cohorts without the need for scaling or transformation, as they are based on absolute biomarker concentrations. Validated in multiple independent cohorts, this tool has promising applications in precision immunomodulatory therapy.
 
 - The models can be used in R with just **a single line of code**, making them easy to integrate into research workflows.  
 - For non-coding users, a **Shiny web application** is also included — just upload your Excel file and get results instantly.
@@ -39,7 +39,7 @@ If you use this package, please cite: Michels, E.H.A. (2024). xxxxx [Software]. 
 | **Corticosteroid Response** | ✅ Identifies responders vs. non-responders | ✅ **Better differentiation** in borderline responders |
 | **Tracking Over Time** | ✅ **Useful for monitoring**, but stage transitions may be sudden | ✅ **More gradual tracking** – Detects improvement/deterioration even within a stage |
 | **Clinical Insights** | Helps categorize patients & predict outcomes | Provides **continuous assessment** of immune progression & treatment effects |
-| **Technical Requirements** | Runs in **R only** | Requires **Python (via reticulate)** |
+| **Technical Requirements** | Runs in **R only** | Uses a **Python** model via reticulate (Python usually configured automatically)|
 
 
 
@@ -53,8 +53,9 @@ install.packages("devtools")
 devtools::install_github("DysregulatedImmuneProfile/DIP")
 ```
 
-- ⚠️ The cDIP function **requires** Python. Please install Python at https://www.python.org/downloads/. During the installation make sure you TICK the box of 'Add Python to PATH' prior to pressing 'install now'. 
-- ⚠️ If Python is already installed: In RStudio, go to Tools → Global Options → Python, click “Select…”, and choose any available Python interpreter from the list. Apply the changes and restart RStudio if prompted to complete the linkage.
+- ⚠️ The cDIP model runs a **Python** machine-learning model through the reticulate package. In most cases, the required Python environment will be automatically configured when the function is first used. If automatic setup is not possible (for example on restricted institutional systems), the function will provide instructions on how to install or link Python manually.
+- Install message: Please install Python at https://www.python.org/downloads/. During the installation make sure you TICK the box of 'Add Python to PATH' prior to pressing 'install now'. 
+- Linking message: If Python is already installed: In RStudio, go to Tools → Global Options → Python, click “Select…”, and choose any available Python interpreter from the list. Apply the changes and restart RStudio if prompted to complete the linkage.
 
 
 ---
@@ -71,7 +72,7 @@ Traditional scoring systems fail to accurately reflect immune state, limiting th
   - DIP1 (minor dysregulation)
   - DIP2 (moderate dysregulation)
   - DIP3 (major dysregulation)
-- Providing a continuous dysregulation score (cDIP) for more granular assessment. The score ranges from 0 to 1 in which 0 is closely resemles immune homeostasis while 1 reflects extreme immune dysregulation.
+- Providing a continuous dysregulation score (cDIP) for more granular assessment. The score ranges from 0 to 1 in which 0 is closely resembles immune homeostasis while 1 reflects extreme immune dysregulation.
 
 ### 🔹 Two Independent Machine Learning Models
 - The **stage-based DIP model** (DIP_stage) uses an extreme gradient boosting decision tree (XGBoost) to classify patients into DIP1, DIP2, or DIP3.
@@ -144,7 +145,7 @@ The results of the test data should look like this:
 
 #### 🖥 Output:
 - **cDIP Score (0-1):** Higher values indicate greater immune dysregulation.
-- **Interactive beeswarm plot** to visualize dysregulation distribution.
+- **beeswarm plot** to visualize dysregulation distribution.
 
 #### 💻 How to Use cDIP
 ```r
