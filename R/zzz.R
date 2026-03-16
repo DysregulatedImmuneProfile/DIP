@@ -18,10 +18,10 @@
   "scikit-learn==1.5.2" # keep pin here since this is safety-critical
 )
 
-# Used for the pip fallback — full version bounds for conflict prevention
+# Used for the pip fallback — minimum bounds to ensure functionality, no max bounds
 .dip_module_to_package <- c(
-  numpy = "numpy>=1.21,<2.0",
-  pandas = "pandas>=1.3,<3.0",
+  numpy = "numpy>=1.21",
+  pandas = "pandas>=1.3",
   sklearn = "scikit-learn==1.5.2"
 )
 
@@ -56,11 +56,10 @@
   # STEP 1: If Python is NOT active, prioritize uv via py_require FIRST.
   # Do this BEFORE checking import status, so we don't accidentally initialize a broken Python.
   if (!py_already_active && use_uv) {
-    uv_error <- NULL
     tryCatch(
       reticulate::py_require(.dip_py_require_packages),
       error = function(e) {
-        uv_error <<- conditionMessage(e)
+        # Silently catch and let it fall through to the fallback checks
       }
     )
   }
