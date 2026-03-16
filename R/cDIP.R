@@ -15,7 +15,7 @@
 #' @name cDIP
 #' @param new_data A data frame containing ID, TREM_1, IL_6, and Procalcitonin.
 #' @return A data frame with the predicted continuous immune dysregulation score (cDIP).
-#' @importFrom reticulate py_load_object py_run_string r_to_py
+#' @importFrom reticulate py_load_object py_run_string r_to_py py_to_r py_available py_config
 #' @importFrom ggplot2 ggplot aes scale_color_gradient2 theme_minimal expand_limits coord_flip ggtitle
 #' @importFrom scales squish
 #' @importFrom ggbeeswarm geom_beeswarm
@@ -87,13 +87,6 @@ cDIP <- function(new_data) {
   }
 
   if (!isTRUE(deps_ok)) {
-    # Clean up the output so it doesn't just say "<unavailable>"
-    display_path <- if (py_path == "<unavailable>") {
-      "Not found or failed to initialize"
-    } else {
-      py_path
-    }
-
     .fail(
       paste0(
         "Python dependencies for DIP are missing and could not be installed automatically.\n\n",
@@ -102,7 +95,7 @@ cDIP <- function(new_data) {
         "\n",
         "Required packages: numpy, pandas, scikit-learn (== 1.5.2).\n\n",
         "HOW TO FIX THIS:\n",
-        "  1) If you do not have Python installed: Download and install it from https://www.python.org/downloads/\n",
+        "  1) If you do not have Python installed (or a version not compatible with DIP scikit-learn 1.5.2): Download and install it from https://www.python.org/downloads/\n",
         "  2) If Python is installed or you are in a secure hospital environment: point to the existing Python installation.\n\n",
         "Once Python is available on your machine, point R to it before loading DIP by running:\n",
         "  Sys.setenv(RETICULATE_USE_UV = '0')\n",
