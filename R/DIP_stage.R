@@ -62,7 +62,6 @@ DIP_stage <- function(new_data) {
     stop("Error: IDs are not unique. Each ID must be unique. Patients with multiple timepoints should have the timepoint included in their ID.")
   }
 
-
   ## Ensure the predictor data is correct
   expected_vars <- c("TREM_1", "IL_6", "Procalcitonin")  # Correct order expected by the model
 
@@ -91,20 +90,35 @@ DIP_stage <- function(new_data) {
     }
   }
 
-  ## Omit patients with missing classifier data
-  rows_with_missing <- new_data$ID[rowSums(is.na(new_data[expected_vars])) > 0]
-  if (length(rows_with_missing) > 0) {
-    message("Patients with missing classifier data are omitted. Affected patient IDs:")
-    message(paste(rows_with_missing, collapse = " "))
-    new_data <- new_data[!new_data$ID %in% rows_with_missing, ]
-  }
+## Omit patients with missing classifier data
+rows_with_missing <- new_data$ID[rowSums(is.na(new_data[expected_vars])) > 0]
+if (length(rows_with_missing) > 0) {
+  message("Patients with missing classifier data are omitted. Affected patient IDs:")
+  message(paste(rows_with_missing, collapse = " "))
+  new_data <- new_data[!new_data$ID %in% rows_with_missing, , drop = FALSE]
+}
 
-  ## Extract predictor columns in the correct order and convert factors to numeric if needed
-  predictors <- new_data[, expected_vars]
-  predictors[] <- lapply(predictors, function(x) if (is.factor(x)) as.numeric(as.factor(x)) else x)
-  if (!all(sapply(predictors, is.numeric))) {
-    stop("All biomarker columns in new_data must be numeric.")
-  }
+if (nrow(new_data) == 0) {
+  stop("No predictions could be made because all rows had at least one missing required biomarker value.")
+}
+
+## Extract predictor columns
+predictors <- new_data[, expected_vars, drop = FALSE]
+
+## Ensure numeric biomarkers
+if (!all(vapply(predictors, is.numeric, logical(1)))) {
+  stop("One or more biomarker columns are not numeric. Please ensure TREM_1, IL_6, and Procalcitonin contain numbers only.")
+}
+
+## Check for NA, NaN, Inf
+if (any(!is.finite(as.matrix(predictors)))) {
+  stop("Biomarker values must be finite numbers. NA, NaN, or Inf values are not allowed.")
+}
+
+## Check for negative values
+if (any(as.matrix(predictors) < 0)) {
+  stop("Negative biomarker values detected. TREM_1, IL_6, and Procalcitonin must be non-negative concentrations in pg/ml.")
+}
 
   ## Convert predictor data to matrix and create a DMatrix object
   predictors_matrix <- as.matrix(predictors)
