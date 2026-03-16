@@ -94,7 +94,13 @@
         pkg_string,
         "]\n",
         "for pkg in packages:\n",
-        "    subprocess.check_call([sys.executable, '-m', 'pip', 'install', pkg])"
+        "    print(f'Installing {pkg}...')\n",
+        "    p = subprocess.Popen([sys.executable, '-m', 'pip', 'install', pkg], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)\n",
+        "    for line in p.stdout:\n",
+        "        print(line, end='')\n",
+        "    p.wait()\n",
+        "    if p.returncode != 0:\n",
+        "        raise RuntimeError(f'pip install failed for {pkg}')"
       )
 
       reticulate::py_run_string(py_script)
