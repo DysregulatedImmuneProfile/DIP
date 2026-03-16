@@ -134,9 +134,9 @@ The results of the test data should look like this:
 📈 Instead of discrete stages (DIP1-3), **cDIP provides a continuous immune dysregulation score ranging from 0 to 1**.
 
 ### ⚠️ Requirement
-- The cDIP function requires Python. Please install Python at https://www.python.org/downloads/.
-- During the installation make sure you tick the box of 'Add Python to PATH' prior to pressing 'install now'
-- If Python is already installed: In RStudio, go to Tools → Global Options → Python, click “Select…”, and choose any available Python interpreter from the list. Apply the changes and restart RStudio if prompted to complete the linkage.
+- The cDIP model runs a **Python** machine-learning model through the reticulate package. In most cases, the required Python environment will be **automatically** configured when the function is first used. If automatic setup is not possible (for example on restricted institutional systems), the function will provide instructions on how to install or link Python manually.
+- **Install instructions**: Please install Python at https://www.python.org/downloads/. During the installation make sure you tick the box of 'Add Python to PATH' prior to pressing 'install now'
+- **Linking instructions** If Python is already installed: In RStudio, go to Tools → Global Options → Python, click “Select…”, and choose any available Python interpreter from the list. Apply the changes and restart RStudio if prompted to complete the linkage.
 
 #### 🧪 Input:
 - Same **3-biomarker input** as DIP_stage.
