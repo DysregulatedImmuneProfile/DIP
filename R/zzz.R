@@ -1,6 +1,27 @@
+# zzz.R — Python dependency management for the DIP package
+#
+# This file defines the required Python packages and the helper functions
+# that resolve them at runtime. Dependency resolution is performed lazily
+# (inside cDIP(), not at package load) to avoid locking the R session to
+# a Python interpreter before the user has had a chance to configure one.
+#
+# Resolution order:
+#   1. reticulate::py_require() via uv          — preferred, fully automatic
+#   2. pip install in the active interpreter    — fallback for restricted/
+#                                                 hospital environments
+
+# Used for py_require() — simple names only, avoids duplicate/conflict with
+# reticulate's own internal numpy requirement
+.dip_py_require_packages <- c(
+  "numpy",
+  "pandas",
+  "scikit-learn==1.5.2" # keep pin here since this is safety-critical
+)
+
+# Used for the pip fallback — full version bounds for conflict prevention
 .dip_module_to_package <- c(
-  numpy = "numpy",
-  pandas = "pandas",
+  numpy = "numpy>=1.21,<2.0",
+  pandas = "pandas>=1.3,<3.0",
   sklearn = "scikit-learn==1.5.2"
 )
 
@@ -35,10 +56,11 @@
   # STEP 1: If Python is NOT active, prioritize uv via py_require FIRST.
   # Do this BEFORE checking import status, so we don't accidentally initialize a broken Python.
   if (!py_already_active && use_uv) {
+    uv_error <- NULL
     tryCatch(
-      reticulate::py_require(unname(.dip_module_to_package)),
+      reticulate::py_require(.dip_py_require_packages),
       error = function(e) {
-        # Silently catch and let it fall through to the fallback checks
+        uv_error <<- conditionMessage(e)
       }
     )
   }
@@ -64,8 +86,11 @@
         "try:\n",
         "    import pip\n",
         "except ImportError:\n",
-        "    import ensurepip\n",
-        "    ensurepip.bootstrap()\n",
+        "    try:\n",
+        "        import ensurepip\n",
+        "        ensurepip.bootstrap()\n",
+        "    except Exception as e:\n",
+        "        raise RuntimeError(f\"pip is not available and ensurepip bootstrap failed: {e}\")\n",
         "packages = [",
         pkg_string,
         "]\n",
