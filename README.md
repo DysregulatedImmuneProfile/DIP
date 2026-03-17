@@ -1,4 +1,5 @@
 # DIP - A parsimonious machine learning framework for predicting the degree of immune dysregulation 
+Original article: https://doi.org/10.1016/S2213-2600(25)00429-1
 
 DIP (Dysregulated Immune Profile) is an open-source machine-learning framework designed to predict the degree of immune dysregulation in patients using just three biomarkers:
 
@@ -12,7 +13,7 @@ This framework enables quantification of immune dysregulation, stratifying patie
 - For non-coding users, a **Shiny web application** is also included — just upload your Excel file and get results instantly.
 
 For questions, licensing, or commercial use, contact: 📧 E.H.A. Michels – e.h.michels@amsterdamumc.nl and T. van der Poll - t.vanderpoll@amsterdamumc.nl
-If you use this package, please cite: Michels, E.H.A. (2024). xxxxx [Software]. DOI/Repository Link (if applicable)
+If you use this package, please cite: Michels, E. H. A., Dequin, P.-F., Butler, J. M., et al. (2026). Quantifying immune dysregulation in pneumonia and sepsis with a parsimonious machine-learning model: A multicohort analysis across care settings and reanalysis of a hydrocortisone randomised controlled trial. The Lancet Respiratory Medicine. Advance online publication. https://doi.org/10.1016/S2213-2600(25)00429-1
 
 ---
 
