@@ -181,10 +181,11 @@ if (any(as.matrix(predictors) < 0)) {
   ## Create the pie chart using plotly
   pie_chart <- plotly::plot_ly(
     data = prediction_data,
-    labels = ~fill_label,
+    labels = ~DIP,
     values = ~Freq,
-    type = 'pie',
-    textinfo = 'label+percent',
+    type = "pie",
+    texttemplate = "%{label} %{value} (%{percent})",
+    textinfo = "none",
     marker = list(colors = custom_colors))
 
   ## Apply layout separately
